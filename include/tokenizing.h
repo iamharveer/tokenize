@@ -8,3 +8,4 @@ typedef struct
 
 TOK_STRUCT* tokenizing (const char *, TOK_STRUCT **);
 
+extern int tokenBuffSize;

@@ -11,11 +11,14 @@ int main(int argc, char *argv[])
   // allocated via remalloc in readFile fxn, remember to
   // free it after use.
   char *fContents = readFile(argc, argv);
-  
+  if (fContents == NULL)
+    return -1;
+
   TOK_STRUCT *tokens = NULL;
   tokenizing (fContents, &tokens);
   
-  for (int i = 0; i < 100; i++)
+  //tokenBuffSize is defined in declared as extern in tokenizing.h
+  for (int i = 0; i < tokenBuffSize; i++)
   {
     int j = 0;
 

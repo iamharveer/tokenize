@@ -14,7 +14,17 @@ const char* get_fName (int argc, char **argv)
   for (int i = 0; i < argc; i++)
   {
     if ( !strcmp (argv[i], "-f") )
-      return argv[i+1];
+    {
+      if ( argv[i+1] != NULL && argv[i+1] != 0)
+        return argv[i+1];
+      else
+      {
+        printf ("ERROR: Missing file name following '-f'\n");
+        return NULL;
+      }
+
+    }
+    
   }
 
   fprintf (stderr, "Please specify filename followed by '-f'\n");
@@ -55,7 +65,7 @@ char* readFile(int argc, char *argv[])
        break; 
   
   }
- 
+
   return fContents;
 }
 
