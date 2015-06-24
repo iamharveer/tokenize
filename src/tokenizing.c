@@ -21,11 +21,8 @@ int delimCheck ( const char* fContents, int *prevTokPos)
 
 void pushToken (TOK_STRUCT **tokens, const char *fContents, int len, char delimCh)
 {
-  static int count = 0;
-  if ( count++ == 0)
-    *tokens = get_space (*tokens, sizeof (TOK_STRUCT) );
-  else
-    get_space (*tokens, sizeof (TOK_STRUCT) );
+  static int count = 1;
+  *tokens = get_space (*tokens, (count++)*sizeof (TOK_STRUCT) );
   (*tokens + tokenBuffSize)->str = fContents;
   (*tokens + tokenBuffSize)->delimCh = delimCh;
   (*tokens + tokenBuffSize)->size = len;
