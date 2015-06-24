@@ -27,38 +27,36 @@ char* readFile(int argc, char *argv[])
   if (fName == NULL)
     return NULL;
 
-  char *fContents = NULL;
-  fContents = (char *) get_space (fContents, 96);
-  
-  if (fContents == NULL)
-    fprintf (stderr, "ERROR: %s at line number = %d\n", "get_space returned NULL", __LINE__);
-  
   errno = 0;
   int fd = open ( fName, O_RDONLY);
   
   if (fd == -1)
     fprintf (stderr, "ERROR: %s at line number = %d\n", "opening file", __LINE__);
 
-  char *preserveF_ptr = fContents;
-  ssize_t nBytesRead;
-
-  while (1)
-  {
-    nBytesRead = read (fd, fContents, 96);
-
-    if ( nBytesRead == 96)
-      get_space (preserveF_ptr, 96);
-      
-    else
-    {
-      if ( fContents[nBytesRead] == '\0')
-        break;
-    }
-
-    fContents += 96;
-  }
+  struct stat fStat = {0};
+  if ( fstat( fd, &fStat) == -1)
+    fprintf (stderr, "ERROR: %s at line number = %d\n", strerror(errno), __LINE__);
   
-  return preserveF_ptr;
+  char *fContents = get_space(NULL, fStat.st_size);
+  if (fContents == NULL)
+    fprintf (stderr, "ERROR: %s at line number = %d\n", "allocating space", __LINE__);
+  
+  int bytesToRead = fStat.st_size;  
+  for (ssize_t bytesRead = 0; ; )
+  {
+     bytesRead = read (  fd, fContents, bytesToRead);
+     if (bytesRead < bytesToRead)
+     {
+       bytesToRead -= bytesRead;
+       fContents += bytesRead;
+     }
+     
+     else
+       break; 
+  
+  }
+ 
+  return fContents;
 }
 
 
